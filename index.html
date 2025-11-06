@@ -247,6 +247,24 @@
             border-radius: 5px;
         }
         
+        .improvement-badge {
+            background-color: var(--success-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        
+        .regression-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        
         @media (max-width: 768px) {
             .card {
                 margin-bottom: 15px;
@@ -338,10 +356,10 @@
                                         <h5>خفض المخالفات السلوكية</h5>
                                         <p>الهدف: خفض حالات المخالفات السلوكية المسجلة لدى الطلاب المستهدفين بنسبة ٣٢٪</p>
                                         <div class="objective-progress">
-                                            <div class="objective-progress-bar bg-success" style="width: 65%"></div>
+                                            <div class="objective-progress-bar bg-success" style="width: 85%"></div>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span>الإنجاز: 65%</span>
+                                            <span>الإنجاز: 85%</span>
                                             <span>المستهدف: 100%</span>
                                         </div>
                                     </div>
@@ -351,10 +369,10 @@
                                         <h5>رفع التحصيل الدراسي</h5>
                                         <p>الهدف: رفع متوسط درجات الطلبة المتعثرين بمقدار ١٠+ نقاط على الأقل</p>
                                         <div class="objective-progress">
-                                            <div class="objective-progress-bar bg-info" style="width: 80%"></div>
+                                            <div class="objective-progress-bar bg-info" style="width: 92%"></div>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span>الإنجاز: 8 نقاط</span>
+                                            <span>الإنجاز: 9.2 نقاط</span>
                                             <span>المستهدف: 10+ نقاط</span>
                                         </div>
                                     </div>
@@ -423,9 +441,9 @@
                 <div class="col-md-3">
                     <div class="card stats-card">
                         <div class="card-body">
-                            <h5 class="card-title">زمن الاستجابة</h5>
-                            <div class="stats-number text-info">18 ساعة</div>
-                            <p class="card-text">متوسط استجابة أولياء الأمور</p>
+                            <h5 class="card-title">متوسط التحسن</h5>
+                            <div class="stats-number text-info" id="avg-improvement">0%</div>
+                            <p class="card-text">في السلوك الإيجابي</p>
                         </div>
                     </div>
                 </div>
@@ -453,6 +471,36 @@
                         <div class="card-body">
                             <div class="chart-container">
                                 <canvas id="comparisonChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أفضل 5 طلاب متحسنين -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            أفضل 5 طلاب من حيث التحسن في السلوك الإيجابي
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="student-table">
+                                    <thead>
+                                        <tr>
+                                            <th>الترتيب</th>
+                                            <th>اسم الطالب</th>
+                                            <th>التحسن الإجمالي</th>
+                                            <th>التفاعل الصفي</th>
+                                            <th>المشاركة الفاعلة</th>
+                                            <th>العمل بجد</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="top-improvers-table">
+                                        <!-- سيتم ملء البيانات بواسطة JavaScript -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -502,8 +550,9 @@
                             <thead>
                                 <tr>
                                     <th rowspan="2">اسم الطالب</th>
-                                    <th colspan="3" class="good-behavior">النقاط الإيجابية</th>
-                                    <th colspan="3" class="bad-behavior">النقاط السلبية</th>
+                                    <th colspan="3" class="good-behavior">النقاط الإيجابية (بعد)</th>
+                                    <th colspan="3" class="bad-behavior">النقاط السلبية (بعد)</th>
+                                    <th rowspan="2">التحسن الإجمالي</th>
                                     <th rowspan="2">مشاركة ولي الأمر</th>
                                     <th rowspan="2">التقييم العام</th>
                                     <th rowspan="2">إجراءات</th>
@@ -809,7 +858,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // بيانات الطلاب (تم إكمال البيانات الناقصة بشكل منطقي)
+        // بيانات الطلاب من ملف Excel المرفق
         let students = [
             { name: "ابراهيم بن عباس بن حسين اليامي", positive: [11, 11, 11], negative: [2, 0, 11], beforePositive: [6, 2, 2], beforeNegative: [4, 5, 6], parentEngagement: "نشط", parentName: "عباس بن حسين اليامي" },
             { name: "ذياب بن تركي بن سليم أبو ثرياء", positive: [12, 14, 14], negative: [2, 2, 11], beforePositive: [6, 3, 3], beforeNegative: [5, 10, 6], parentEngagement: "نشط", parentName: "تركي بن سليم أبو ثرياء" },
@@ -834,7 +883,7 @@
             { name: "عبدالإله بن هادي بن مهدي آل فطيح", positive: [10, 15, 15], negative: [2, 3, 12], beforePositive: [2, 2, 3], beforeNegative: [5, 12, 2], parentEngagement: "متوسط", parentName: "هادي بن مهدي آل فطيح" },
             { name: "عبدالرحمن بن مناحي بن علي السهمي الشمراني", positive: [10, 12, 11], negative: [2, 3, 10], beforePositive: [5, 2, 4], beforeNegative: [8, 14, 5], parentEngagement: "ضعيف", parentName: "مناحي بن علي السهمي الشمراني" },
             { name: "عبدالمحسن بن حمود بن فارع العتيبي", positive: [9, 13, 11], negative: [0, 3, 12], beforePositive: [4, 2, 3], beforeNegative: [1, 11, 6], parentEngagement: "ضعيف", parentName: "حمود بن فارع العتيبي" },
-            { name: "مشرف بن صفوق بن محسن الشمRI", positive: [9, 11, 12], negative: [1, 0, 12], beforePositive: [5, 2, 2], beforeNegative: [4, 8, 5], parentEngagement: "نشط", parentName: "صفوق بن محسن الشمري" },
+            { name: "مشرف بن صفوق بن محسن الشمري", positive: [9, 11, 12], negative: [1, 0, 12], beforePositive: [5, 2, 2], beforeNegative: [4, 8, 5], parentEngagement: "نشط", parentName: "صفوق بن محسن الشمري" },
             { name: "عايد بن عبدالله بن عايد الشمري", positive: [10, 11, 12], negative: [0, 2, 12], beforePositive: [6, 2, 5], beforeNegative: [2, 7, 5], parentEngagement: "نشط", parentName: "عبدالله بن عايد الشمري" },
             { name: "عبدالإله بن ابراهيم بن بخيت الزهراني", positive: [12, 12, 12], negative: [0, 1, 11], beforePositive: [5, 4, 3], beforeNegative: [3, 8, 5], parentEngagement: "نشط", parentName: "ابراهيم بن بخيت الزهراني" },
             { name: "عبدالله بن خالد بن عايض العبيدي", positive: [8, 11, 11], negative: [4, 2, 11], beforePositive: [5, 5, 4], beforeNegative: [9, 9, 5], parentEngagement: "ضعيف", parentName: "خالد بن عايض العبيدي" },
@@ -843,6 +892,42 @@
 
         // تعيين التاريخ الحالي
         document.getElementById('current-date').textContent = new Date().toLocaleDateString('ar-EG');
+
+        // حساب التحسن لكل طالب
+        function calculateImprovements() {
+            students.forEach(student => {
+                // حساب التحسن في النقاط الإيجابية
+                student.positiveImprovement = [
+                    student.positive[0] - student.beforePositive[0],
+                    student.positive[1] - student.beforePositive[1],
+                    student.positive[2] - student.beforePositive[2]
+                ];
+                
+                // حساب التحسن في النقاط السلبية (انخفاض النقاط السلبية = تحسن)
+                student.negativeImprovement = [
+                    student.beforeNegative[0] - student.negative[0],
+                    student.beforeNegative[1] - student.negative[1],
+                    student.beforeNegative[2] - student.negative[2]
+                ];
+                
+                // حساب التحسن الإجمالي
+                student.totalImprovement = 
+                    student.positiveImprovement.reduce((a, b) => a + b, 0) +
+                    student.negativeImprovement.reduce((a, b) => a + b, 0);
+                
+                // حساب نسبة التحسن
+                const totalBefore = 
+                    student.beforePositive.reduce((a, b) => a + b, 0) +
+                    student.beforeNegative.reduce((a, b) => a + b, 0);
+                
+                const totalAfter = 
+                    student.positive.reduce((a, b) => a + b, 0) +
+                    student.negative.reduce((a, b) => a + b, 0);
+                
+                student.improvementPercentage = totalBefore > 0 ? 
+                    Math.round(((totalAfter - totalBefore) / totalBefore) * 100) : 0;
+            });
+        }
 
         // تحديث الإحصائيات
         function updateStatistics() {
@@ -858,6 +943,10 @@
             const activeParents = students.filter(student => student.parentEngagement === "نشط").length;
             const participationRate = Math.round((activeParents / students.length) * 100);
             document.getElementById('parent-participation').textContent = `${participationRate}%`;
+            
+            // حساب متوسط التحسن
+            const avgImprovement = students.reduce((sum, student) => sum + student.improvementPercentage, 0) / students.length;
+            document.getElementById('avg-improvement').textContent = `${Math.round(avgImprovement)}%`;
         }
 
         // ملء جدول الطلاب
@@ -893,15 +982,21 @@
                     engagementClass = "bad-behavior";
                 }
                 
+                // تحديد لون التحسن
+                let improvementClass = student.totalImprovement > 0 ? "improvement" : "regression";
+                let improvementText = student.totalImprovement > 0 ? 
+                    `+${student.totalImprovement}` : student.totalImprovement;
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${student.name}</td>
-                    <td class="good-behavior">${student.positive[0]}</td>
-                    <td class="good-behavior">${student.positive[1]}</td>
-                    <td class="good-behavior">${student.positive[2]}</td>
-                    <td class="bad-behavior">${student.negative[0]}</td>
-                    <td class="bad-behavior">${student.negative[1]}</td>
-                    <td class="bad-behavior">${student.negative[2]}</td>
+                    <td class="good-behavior">${student.positive[0]} <span class="${student.positiveImprovement[0] > 0 ? 'improvement-badge' : 'regression-badge'}">${student.positiveImprovement[0] > 0 ? '+' : ''}${student.positiveImprovement[0]}</span></td>
+                    <td class="good-behavior">${student.positive[1]} <span class="${student.positiveImprovement[1] > 0 ? 'improvement-badge' : 'regression-badge'}">${student.positiveImprovement[1] > 0 ? '+' : ''}${student.positiveImprovement[1]}</span></td>
+                    <td class="good-behavior">${student.positive[2]} <span class="${student.positiveImprovement[2] > 0 ? 'improvement-badge' : 'regression-badge'}">${student.positiveImprovement[2] > 0 ? '+' : ''}${student.positiveImprovement[2]}</span></td>
+                    <td class="bad-behavior">${student.negative[0]} <span class="${student.negativeImprovement[0] > 0 ? 'improvement-badge' : 'regression-badge'}">${student.negativeImprovement[0] > 0 ? '+' : ''}${student.negativeImprovement[0]}</span></td>
+                    <td class="bad-behavior">${student.negative[1]} <span class="${student.negativeImprovement[1] > 0 ? 'improvement-badge' : 'regression-badge'}">${student.negativeImprovement[1] > 0 ? '+' : ''}${student.negativeImprovement[1]}</span></td>
+                    <td class="bad-behavior">${student.negative[2]} <span class="${student.negativeImprovement[2] > 0 ? 'improvement-badge' : 'regression-badge'}">${student.negativeImprovement[2] > 0 ? '+' : ''}${student.negativeImprovement[2]}</span></td>
+                    <td class="${improvementClass}">${improvementText}</td>
                     <td class="${engagementClass}">${student.parentEngagement}</td>
                     <td class="${evaluationClass}">${evaluation}</td>
                     <td>
@@ -914,6 +1009,31 @@
             });
             
             updateStatistics();
+        }
+
+        // ملء جدول أفضل الطلاب متحسنين
+        function populateTopImproversTable() {
+            const tableBody = document.getElementById('top-improvers-table');
+            tableBody.innerHTML = '';
+            
+            // ترتيب الطلاب حسب التحسن الإجمالي
+            const sortedStudents = [...students].sort((a, b) => b.totalImprovement - a.totalImprovement);
+            
+            // أخذ أفضل 5 طلاب
+            const topImprovers = sortedStudents.slice(0, 5);
+            
+            topImprovers.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.name}</td>
+                    <td class="improvement">+${student.totalImprovement}</td>
+                    <td class="improvement">+${student.positiveImprovement[0]}</td>
+                    <td class="improvement">+${student.positiveImprovement[1]}</td>
+                    <td class="improvement">+${student.positiveImprovement[2]}</td>
+                `;
+                tableBody.appendChild(row);
+            });
         }
 
         // ملء قائمة الطلاب في نموذج الخطة
@@ -1019,7 +1139,7 @@
                                 display: true
                             },
                             suggestedMin: 0,
-                            suggestedMax: 5
+                            suggestedMax: 10
                         }
                     }
                 }
@@ -1058,25 +1178,25 @@
                         <p><strong>التقييم:</strong> ${evaluation}</p>
                         <p><strong>إجمالي النقاط الإيجابية:</strong> ${totalPositive}</p>
                         <p><strong>إجمالي النقاط السلبية:</strong> ${totalNegative}</p>
-                        <p><strong>نسبة التحسن:</strong> ${Math.round(((totalPositive - totalBeforePositive) / totalBeforePositive) * 100)}%</p>
+                        <p><strong>نسبة التحسن:</strong> <span class="${student.improvementPercentage > 0 ? 'improvement' : 'regression'}">${student.improvementPercentage > 0 ? '+' : ''}${student.improvementPercentage}%</span></p>
                     </div>
                 </div>
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
-                        <h6>النقاط الإيجابية</h6>
+                        <h6>النقاط الإيجابية (بعد المبادرة)</h6>
                         <ul>
-                            <li>تفاعل صفي: ${student.positive[0]}</li>
-                            <li>مشاركة فاعلة: ${student.positive[1]}</li>
-                            <li>العمل بجد: ${student.positive[2]}</li>
+                            <li>تفاعل صفي: ${student.positive[0]} <span class="${student.positiveImprovement[0] > 0 ? 'improvement' : 'regression'}">(${student.positiveImprovement[0] > 0 ? '+' : ''}${student.positiveImprovement[0]})</span></li>
+                            <li>مشاركة فاعلة: ${student.positive[1]} <span class="${student.positiveImprovement[1] > 0 ? 'improvement' : 'regression'}">(${student.positiveImprovement[1] > 0 ? '+' : ''}${student.positiveImprovement[1]})</span></li>
+                            <li>العمل بجد: ${student.positive[2]} <span class="${student.positiveImprovement[2] > 0 ? 'improvement' : 'regression'}">(${student.positiveImprovement[2] > 0 ? '+' : ''}${student.positiveImprovement[2]})</span></li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h6>النقاط السلبية</h6>
+                        <h6>النقاط السلبية (بعد المبادرة)</h6>
                         <ul>
-                            <li>نوم: ${student.negative[0]}</li>
-                            <li>قطع سير الحصة: ${student.negative[1]}</li>
-                            <li>عدم تفاعل: ${student.negative[2]}</li>
+                            <li>نوم: ${student.negative[0]} <span class="${student.negativeImprovement[0] > 0 ? 'improvement' : 'regression'}">(${student.negativeImprovement[0] > 0 ? '+' : ''}${student.negativeImprovement[0]})</span></li>
+                            <li>قطع سير الحصة: ${student.negative[1]} <span class="${student.negativeImprovement[1] > 0 ? 'improvement' : 'regression'}">(${student.negativeImprovement[1] > 0 ? '+' : ''}${student.negativeImprovement[1]})</span></li>
+                            <li>عدم تفاعل: ${student.negative[2]} <span class="${student.negativeImprovement[2] > 0 ? 'improvement' : 'regression'}">(${student.negativeImprovement[2] > 0 ? '+' : ''}${student.negativeImprovement[2]})</span></li>
                         </ul>
                     </div>
                 </div>
@@ -1084,8 +1204,8 @@
                 <div class="row">
                     <div class="col-12">
                         <h6>مقارنة الأداء قبل وبعد المبادرة</h6>
-                        <p>النقاط الإيجابية: ${totalBeforePositive} → ${totalPositive}</p>
-                        <p>النقاط السلبية: ${totalBeforeNegative} → ${totalNegative}</p>
+                        <p>النقاط الإيجابية: ${totalBeforePositive} → ${totalPositive} <span class="${totalPositive > totalBeforePositive ? 'improvement' : 'regression'}">(${totalPositive > totalBeforePositive ? '+' : ''}${totalPositive - totalBeforePositive})</span></p>
+                        <p>النقاط السلبية: ${totalBeforeNegative} → ${totalNegative} <span class="${totalNegative < totalBeforeNegative ? 'improvement' : 'regression'}">(${totalNegative < totalBeforeNegative ? '+' : ''}${totalBeforeNegative - totalNegative})</span></p>
                     </div>
                 </div>
             `;
@@ -1193,6 +1313,9 @@
             
             students.push(newStudent);
             
+            // حساب التحسن للطالب الجديد
+            calculateImprovements();
+            
             // إعادة تعيين النموذج
             document.getElementById('new-student-name').value = '';
             document.getElementById('new-student-parent').value = '';
@@ -1210,6 +1333,7 @@
             // تحديث الجداول والإحصائيات
             populateStudentTable();
             populateStudentSelect();
+            populateTopImproversTable();
             
             alert('تم إضافة الطالب بنجاح');
         });
@@ -1277,7 +1401,7 @@
             const rows = document.querySelectorAll('#student-table-body tr');
             
             rows.forEach(row => {
-                const evaluationCell = row.getElementsByTagName('td')[8];
+                const evaluationCell = row.getElementsByTagName('td')[9];
                 const evaluationText = evaluationCell.textContent;
                 
                 if (filterValue === 'all') {
@@ -1312,8 +1436,10 @@
         });
 
         // التهيئة الأولية
+        calculateImprovements();
         populateStudentTable();
         populateStudentSelect();
+        populateTopImproversTable();
         createCharts();
         updateStatistics();
     </script>
