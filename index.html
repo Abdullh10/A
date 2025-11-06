@@ -211,6 +211,42 @@
             display: block;
         }
         
+        .teachers-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .teacher-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-right: 4px solid var(--secondary-color);
+        }
+        
+        .objective-card {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-right: 5px solid var(--success-color);
+        }
+        
+        .objective-progress {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .objective-progress-bar {
+            height: 100%;
+            border-radius: 5px;
+        }
+        
         @media (max-width: 768px) {
             .card {
                 margin-bottom: 15px;
@@ -222,6 +258,10 @@
             
             .stats-number {
                 font-size: 1.8rem;
+            }
+            
+            .teachers-list {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -254,6 +294,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-page="students-list">قائمة الطلاب</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-page="teachers">المعلمين</a>
+                    </li>
                 </ul>
                 <span class="navbar-text">
                     آخر تحديث: <span id="current-date"></span>
@@ -276,6 +319,73 @@
                         <div class="mt-2">
                             <span class="goal-badge">الهدف: خفض المخالفات السلوكية ٣٢٪</span>
                             <span class="goal-badge">رفع التحصيل الدراسي ١٠+ نقاط</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أهداف المبادرة -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            أهداف مبادرة هُمام ومؤشرات الأداء
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="objective-card">
+                                        <h5>خفض المخالفات السلوكية</h5>
+                                        <p>الهدف: خفض حالات المخالفات السلوكية المسجلة لدى الطلاب المستهدفين بنسبة ٣٢٪</p>
+                                        <div class="objective-progress">
+                                            <div class="objective-progress-bar bg-success" style="width: 65%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>الإنجاز: 65%</span>
+                                            <span>المستهدف: 100%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="objective-card">
+                                        <h5>رفع التحصيل الدراسي</h5>
+                                        <p>الهدف: رفع متوسط درجات الطلبة المتعثرين بمقدار ١٠+ نقاط على الأقل</p>
+                                        <div class="objective-progress">
+                                            <div class="objective-progress-bar bg-info" style="width: 80%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>الإنجاز: 8 نقاط</span>
+                                            <span>المستهدف: 10+ نقاط</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="objective-card">
+                                        <h5>مشاركة أولياء الأمور</h5>
+                                        <p>الهدف: تسجيل ٨٥٪ من أولياء أمور الطلبة المستهدفين على ClassDojo</p>
+                                        <div class="objective-progress">
+                                            <div class="objective-progress-bar bg-warning" style="width: 78%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>الإنجاز: 78%</span>
+                                            <span>المستهدف: 85%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="objective-card">
+                                        <h5>استجابة أولياء الأمور</h5>
+                                        <p>الهدف: تحقيق نسبة استجابة أسرية ٧٢٪ للرسائل خلال ٢٤ ساعة</p>
+                                        <div class="objective-progress">
+                                            <div class="objective-progress-bar bg-primary" style="width: 90%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>الإنجاز: 18 ساعة</span>
+                                            <span>المستهدف: 24 ساعة</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -321,73 +431,6 @@
                 </div>
             </div>
 
-            <!-- قسم مؤشرات الأداء الرئيسية -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            مؤشرات الأداء الرئيسية (KPIs) لمبادرة هُمام
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card kpi-card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">مشاركة أولياء الأمور</h5>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="progress flex-grow-1 me-3" style="height: 20px;">
-                                                    <div class="progress-bar bg-success" role="progressbar" id="kpi-participation" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                                                </div>
-                                                <span class="text-nowrap">الهدف: 85%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card kpi-card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">انخفاض المخالفات السلوكية</h5>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="progress flex-grow-1 me-3" style="height: 20px;">
-                                                    <div class="progress-bar bg-info" role="progressbar" id="kpi-behavior" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                                                </div>
-                                                <span class="text-nowrap">الهدف: 70%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card kpi-card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">تحسن التحصيل الدراسي</h5>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="progress flex-grow-1 me-3" style="height: 20px;">
-                                                    <div class="progress-bar bg-warning" role="progressbar" id="kpi-academic" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0 نقاط</div>
-                                                </div>
-                                                <span class="text-nowrap">الهدف: 10+ نقاط</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card kpi-card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">استجابة أولياء الأمور</h5>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div class="progress flex-grow-1 me-3" style="height: 20px;">
-                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">18 ساعة</div>
-                                                </div>
-                                                <span class="text-nowrap">الهدف: 24 ساعة</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- الرسوم البيانية -->
             <div class="row">
                 <div class="col-md-6">
@@ -425,6 +468,35 @@
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">إضافة طالب</button>
                 </div>
                 <div class="card-body">
+                    <div class="filter-section">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="behavior-filter" class="form-label">تصفية حسب السلوك:</label>
+                                    <select class="form-select" id="behavior-filter">
+                                        <option value="all">جميع الطلاب</option>
+                                        <option value="bad">طلاب ذو سلوك منخفض</option>
+                                        <option value="improved">طلاب متحسنون</option>
+                                        <option value="excellent">طلاب ممتازون</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="search-student" class="form-label">بحث عن طالب:</label>
+                                    <input type="text" class="form-control" id="search-student" placeholder="ادخل اسم الطالب">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">إجراءات سريعة:</label>
+                                    <div>
+                                        <button class="btn btn-primary me-2" id="send-classdojo-reports">إرسال تقارير ClassDojo</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="student-table">
                             <thead>
@@ -454,6 +526,49 @@
             </div>
         </div>
 
+        <!-- صفحة المعلمين -->
+        <div id="teachers" class="page-section">
+            <div class="card">
+                <div class="card-header">
+                    قائمة المعلمين والمواد الدراسية
+                </div>
+                <div class="card-body">
+                    <div class="teachers-list">
+                        <div class="teacher-card">
+                            <h5>عبدالله محمد حمدي</h5>
+                            <p class="mb-1"><strong>المادة:</strong> كيمياء</p>
+                            <p class="mb-0"><strong>الدور:</strong> المعلم المشارك في المبادرة</p>
+                        </div>
+                        <div class="teacher-card">
+                            <h5>عبدالعزيز عايض القحطاني</h5>
+                            <p class="mb-1"><strong>المادة:</strong> رياضيات</p>
+                            <p class="mb-0"><strong>الدور:</strong> معلم المادة</p>
+                        </div>
+                        <div class="teacher-card">
+                            <h5>عبدالرحمن عبدالله الغامدي</h5>
+                            <p class="mb-1"><strong>المادة:</strong> أحياء</p>
+                            <p class="mb-0"><strong>الدور:</strong> معلم المادة</p>
+                        </div>
+                        <div class="teacher-card">
+                            <h5>فهد ابراهيم المحبوب</h5>
+                            <p class="mb-1"><strong>المادة:</strong> انجليزي</p>
+                            <p class="mb-0"><strong>الدور:</strong> معلم المادة</p>
+                        </div>
+                        <div class="teacher-card">
+                            <h5>محمد أحمد العميري</h5>
+                            <p class="mb-1"><strong>المادة:</strong> الكفايات اللغوية</p>
+                            <p class="mb-0"><strong>الدور:</strong> معلم المادة</p>
+                        </div>
+                        <div class="teacher-card">
+                            <h5>فارس سعيد الغامدي</h5>
+                            <p class="mb-1"><strong>المادة:</strong> التقنية الرقمية</p>
+                            <p class="mb-0"><strong>الدور:</strong> معلم المادة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- صفحة تقارير أولياء الأمور -->
         <div id="reports" class="page-section">
             <div class="card">
@@ -467,7 +582,7 @@
                                 <div class="card-body">
                                     <h5 class="card-title">تقرير المشاركة</h5>
                                     <p class="card-text">عرض تقرير بمشاركة أولياء الأمور على منصة ClassDojo</p>
-                                    <button class="btn btn-primary">عرض التقرير</button>
+                                    <button class="btn btn-primary" id="view-participation-report">عرض التقرير</button>
                                 </div>
                             </div>
                         </div>
@@ -476,7 +591,7 @@
                                 <div class="card-body">
                                     <h5 class="card-title">تقرير الاستجابة</h5>
                                     <p class="card-text">عرض تقرير بزمن استجابة أولياء الأمور للإشعارات</p>
-                                    <button class="btn btn-primary">عرض التقرير</button>
+                                    <button class="btn btn-primary" id="view-response-report">عرض التقرير</button>
                                 </div>
                             </div>
                         </div>
@@ -499,7 +614,7 @@
                                 <label for="report-message" class="form-label">رسالة مخصصة:</label>
                                 <textarea class="form-control" id="report-message" rows="3" placeholder="أدخل رسالة مخصصة لإرسالها مع التقرير"></textarea>
                             </div>
-                            <button class="btn btn-success">إرسال التقارير</button>
+                            <button class="btn btn-success" id="send-reports">إرسال التقارير</button>
                         </div>
                     </div>
                 </div>
@@ -538,9 +653,11 @@
                                     <label class="form-label">المادة:</label>
                                     <select class="form-select" id="subject">
                                         <option value="chemistry">كيمياء - عبدالله محمد حمدي</option>
-                                        <option value="english">انجليزي - فهد ابراهيم المحبوب</option>
                                         <option value="math">رياضيات - عبدالعزيز عايض القحطاني</option>
                                         <option value="biology">أحياء - عبدالرحمن عبدالله الغامدي</option>
+                                        <option value="english">انجليزي - فهد ابراهيم المحبوب</option>
+                                        <option value="language">الكفايات اللغوية - محمد أحمد العميري</option>
+                                        <option value="technology">التقنية الرقمية - فارس سعيد الغامدي</option>
                                     </select>
                                 </div>
                             </div>
@@ -594,7 +711,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="button" class="btn btn-primary">إرسال إشعار لولي الأمر</button>
+                    <button type="button" class="btn btn-primary" id="send-parent-notification">إرسال إشعار لولي الأمر</button>
                 </div>
             </div>
         </div>
@@ -717,7 +834,7 @@
             { name: "عبدالإله بن هادي بن مهدي آل فطيح", positive: [10, 15, 15], negative: [2, 3, 12], beforePositive: [2, 2, 3], beforeNegative: [5, 12, 2], parentEngagement: "متوسط", parentName: "هادي بن مهدي آل فطيح" },
             { name: "عبدالرحمن بن مناحي بن علي السهمي الشمراني", positive: [10, 12, 11], negative: [2, 3, 10], beforePositive: [5, 2, 4], beforeNegative: [8, 14, 5], parentEngagement: "ضعيف", parentName: "مناحي بن علي السهمي الشمراني" },
             { name: "عبدالمحسن بن حمود بن فارع العتيبي", positive: [9, 13, 11], negative: [0, 3, 12], beforePositive: [4, 2, 3], beforeNegative: [1, 11, 6], parentEngagement: "ضعيف", parentName: "حمود بن فارع العتيبي" },
-            { name: "مشرف بن صفوق بن محسن الشمري", positive: [9, 11, 12], negative: [1, 0, 12], beforePositive: [5, 2, 2], beforeNegative: [4, 8, 5], parentEngagement: "نشط", parentName: "صفوق بن محسن الشمري" },
+            { name: "مشرف بن صفوق بن محسن الشمRI", positive: [9, 11, 12], negative: [1, 0, 12], beforePositive: [5, 2, 2], beforeNegative: [4, 8, 5], parentEngagement: "نشط", parentName: "صفوق بن محسن الشمري" },
             { name: "عايد بن عبدالله بن عايد الشمري", positive: [10, 11, 12], negative: [0, 2, 12], beforePositive: [6, 2, 5], beforeNegative: [2, 7, 5], parentEngagement: "نشط", parentName: "عبدالله بن عايد الشمري" },
             { name: "عبدالإله بن ابراهيم بن بخيت الزهراني", positive: [12, 12, 12], negative: [0, 1, 11], beforePositive: [5, 4, 3], beforeNegative: [3, 8, 5], parentEngagement: "نشط", parentName: "ابراهيم بن بخيت الزهراني" },
             { name: "عبدالله بن خالد بن عايض العبيدي", positive: [8, 11, 11], negative: [4, 2, 11], beforePositive: [5, 5, 4], beforeNegative: [9, 9, 5], parentEngagement: "ضعيف", parentName: "خالد بن عايض العبيدي" },
@@ -741,25 +858,6 @@
             const activeParents = students.filter(student => student.parentEngagement === "نشط").length;
             const participationRate = Math.round((activeParents / students.length) * 100);
             document.getElementById('parent-participation').textContent = `${participationRate}%`;
-            
-            // تحديث مؤشرات الأداء
-            document.getElementById('kpi-participation').style.width = `${participationRate}%`;
-            document.getElementById('kpi-participation').textContent = `${participationRate}%`;
-            document.getElementById('kpi-participation').setAttribute('aria-valuenow', participationRate);
-            
-            const totalBeforeNegative = students.reduce((sum, student) => sum + student.beforeNegative.reduce((a, b) => a + b, 0), 0);
-            const totalNegative = students.reduce((sum, student) => sum + student.negative.reduce((a, b) => a + b, 0), 0);
-            const behaviorImprovement = Math.round(((totalBeforeNegative - totalNegative) / totalBeforeNegative) * 100);
-            document.getElementById('kpi-behavior').style.width = `${behaviorImprovement}%`;
-            document.getElementById('kpi-behavior').textContent = `${behaviorImprovement}%`;
-            document.getElementById('kpi-behavior').setAttribute('aria-valuenow', behaviorImprovement);
-            
-            const totalBeforePositive = students.reduce((sum, student) => sum + student.beforePositive.reduce((a, b) => a + b, 0), 0);
-            const totalPositive = students.reduce((sum, student) => sum + student.positive.reduce((a, b) => a + b, 0), 0);
-            const academicImprovement = Math.round(((totalPositive - totalBeforePositive) / totalBeforePositive) * 100);
-            document.getElementById('kpi-academic').style.width = `${academicImprovement}%`;
-            document.getElementById('kpi-academic').textContent = `${Math.round((totalPositive - totalBeforePositive) / students.length)} نقاط`;
-            document.getElementById('kpi-academic').setAttribute('aria-valuenow', academicImprovement);
         }
 
         // ملء جدول الطلاب
@@ -1057,9 +1155,11 @@
         document.getElementById('subject').addEventListener('change', function() {
             const teachers = {
                 'chemistry': 'عبدالله محمد حمدي',
-                'english': 'فهد ابراهيم المحبوب',
                 'math': 'عبدالعزيز عايض القحطاني',
-                'biology': 'عبدالرحمن عبدالله الغامدي'
+                'biology': 'عبدالرحمن عبدالله الغامدي',
+                'english': 'فهد ابراهيم المحبوب',
+                'language': 'محمد أحمد العميري',
+                'technology': 'فارس سعيد الغامدي'
             };
             
             document.getElementById('teacher-name').value = teachers[this.value];
@@ -1114,6 +1214,42 @@
             alert('تم إضافة الطالب بنجاح');
         });
 
+        // إرسال إشعار لولي الأمر
+        document.getElementById('send-parent-notification').addEventListener('click', function() {
+            alert('تم إرسال الإشعار لولي الأمر بنجاح');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('notificationModal'));
+            modal.hide();
+        });
+
+        // إرسال تقارير ClassDojo
+        document.getElementById('send-classdojo-reports').addEventListener('click', function() {
+            alert('تم إرسال تقارير ClassDojo للطلاب المحددين');
+        });
+
+        // عرض تقارير المشاركة
+        document.getElementById('view-participation-report').addEventListener('click', function() {
+            alert('سيتم عرض تقرير مشاركة أولياء الأمور');
+        });
+
+        // عرض تقارير الاستجابة
+        document.getElementById('view-response-report').addEventListener('click', function() {
+            alert('سيتم عرض تقرير استجابة أولياء الأمور');
+        });
+
+        // إرسال التقارير
+        document.getElementById('send-reports').addEventListener('click', function() {
+            const reportType = document.getElementById('report-type').value;
+            const message = document.getElementById('report-message').value;
+            
+            if (!message) {
+                alert('يرجى إدخال رسالة للتقرير');
+                return;
+            }
+            
+            alert(`تم إرسال التقارير بنجاح (${reportType})`);
+            document.getElementById('report-message').value = '';
+        });
+
         // إضافة مستمعي الأحداث
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('notification-btn')) {
@@ -1133,6 +1269,46 @@
                 alert(`سيتم فتح نموذج تعديل للطالب ${students[index].name}`);
                 // هنا يمكنك إضافة كود لفتح نموذج تعديل
             }
+        });
+
+        // التصفية حسب السلوك
+        document.getElementById('behavior-filter').addEventListener('change', function() {
+            const filterValue = this.value;
+            const rows = document.querySelectorAll('#student-table-body tr');
+            
+            rows.forEach(row => {
+                const evaluationCell = row.getElementsByTagName('td')[8];
+                const evaluationText = evaluationCell.textContent;
+                
+                if (filterValue === 'all') {
+                    row.style.display = '';
+                } else if (filterValue === 'bad' && evaluationText === 'بحاجة متابعة') {
+                    row.style.display = '';
+                } else if (filterValue === 'improved' && (evaluationText === 'ممتاز' || evaluationText === 'جيد جداً')) {
+                    row.style.display = '';
+                } else if (filterValue === 'excellent' && evaluationText === 'ممتاز') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // البحث عن طالب
+        document.getElementById('search-student').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#student-table-body tr');
+            
+            rows.forEach(row => {
+                const nameCell = row.getElementsByTagName('td')[0];
+                const nameText = nameCell.textContent.toLowerCase();
+                
+                if (nameText.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         });
 
         // التهيئة الأولية
