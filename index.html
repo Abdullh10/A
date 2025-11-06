@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام هُمام - تحليل سلوك الطلاب</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a5276;
+            --secondary-color: #2e86c1;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .humam-logo {
+            font-weight: bold;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: bold;
+        }
+        
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .student-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .student-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .student-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .student-table tr:hover {
+            background-color: #e9f7fe;
+        }
+        
+        .bad-behavior {
+            background-color: #ffebee;
+            color: #c62828;
+            font-weight: bold;
+        }
+        
+        .good-behavior {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        
+        .improvement {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .regression {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .stats-card {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .filter-section {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .initiative-highlight {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-right: 5px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .goal-badge {
+            background-color: var(--info-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .kpi-card {
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                margin-bottom: 15px;
+            }
+            
+            .student-table {
+                font-size: 0.8rem;
+            }
+            
+            .stats-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="humam-logo">هُمام</span>
+                نظام تحليل سلوك الطلاب
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">لوحة التحكم</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ClassDojo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">تقارير أولياء الأمور</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">خطط الدعم الفردي</a>
+                    </li>
+                </ul>
+                <span class="navbar-text">
+                    آخر تحديث: <span id="current-date"></span>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- قسم مبادرة هُمام -->
+        <div class="initiative-highlight">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4>مبادرة هُمام: همزة الوصل بين الأسرة والمدرسة</h4>
+                    <p class="mb-0">مبادرة رقمية تهدف إلى رفع التحصيل الدراسي وتعزيز السلوك الإيجابي من خلال تواصل فعال مع أولياء الأمور باستخدام أدوات رقمية مثل ClassDojo.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="mt-2">
+                        <span class="goal-badge">الهدف: خفض المخالفات السلوكية ٣٢٪</span>
+                        <span class="goal-badge">رفع التحصيل الدراسي ١٠+ نقاط</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الإحصائيات العامة -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">إجمالي الطلاب</h5>
+                        <div class="stats-number text-primary">35</div>
+                        <p class="card-text">طالب في الصف الأول الثانوي</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">طلاب بحاجة متابعة</h5>
+                        <div class="stats-number text-warning">12</div>
+                        <p class="card-text">طلاب ذو سلوك منخفض</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">مشاركة أولياء الأمور</h5>
+                        <div class="stats-number text-success">78%</div>
+                        <p class="card-text">مسجلين على ClassDojo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">زمن الاستجابة</h5>
+                        <div class="stats-number text-info">18 ساعة</div>
+                        <p class="card-text">متوسط استجابة أولياء الأمور</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم مؤشرات الأداء الرئيسية -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        مؤشرات الأداء الرئيسية (KPIs) لمبادرة هُمام
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card kpi-card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">مشاركة أولياء الأمور</h5>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="progress flex-grow-1 me-3" style="height: 20px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: 78%;" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100">78%</div>
+                                            </div>
+                                            <span class="text-nowrap">الهدف: 85%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card kpi-card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">انخفاض المخالفات السلوكية</h5>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="progress flex-grow-1 me-3" style="height: 20px;">
+                                                <div class="progress-bar bg-info" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
+                                            </div>
+                                            <span class="text-nowrap">الهدف: 70%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card kpi-card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">تحسن التحصيل الدراسي</h5>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="progress flex-grow-1 me-3" style="height: 20px;">
+                                                <div class="progress-bar bg-warning" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">8 نقاط</div>
+                                            </div>
+                                            <span class="text-nowrap">الهدف: 10+ نقاط</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card kpi-card mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">استجابة أولياء الأمور</h5>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="progress flex-grow-1 me-3" style="height: 20px;">
+                                                <div class="progress-bar bg-primary" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">18 ساعة</div>
+                                            </div>
+                                            <span class="text-nowrap">الهدف: 24 ساعة</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم التصفية -->
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="behavior-filter" class="form-label">تصفية حسب السلوك:</label>
+                        <select class="form-select" id="behavior-filter">
+                            <option value="all">جميع الطلاب</option>
+                            <option value="bad">طلاب ذو سلوك منخفض</option>
+                            <option value="improved">طلاب متحسنون</option>
+                            <option value="excellent">طلاب ممتازون</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="search-student" class="form-label">بحث عن طالب:</label>
+                        <input type="text" class="form-control" id="search-student" placeholder="ادخل اسم الطالب">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">الإجراءات:</label>
+                        <div>
+                            <button class="btn btn-primary me-2">إرسال تقرير ClassDojo</button>
+                            <button class="btn btn-success">إشعار ولي الأمر</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- الرسوم البيانية -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        توزيع السلوكيات الإيجابية والسلبية
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="behaviorChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        مقارنة الأداء قبل وبعد تطبيق مبادرة هُمام
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="comparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول بيانات الطلاب -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>تفاصيل أداء الطلاب - الصف الأول الثانوي</span>
+                <div>
+                    <span class="badge bg-primary">35 طالب</span>
+                    <span class="badge bg-success ms-2">23 طالب متحسن</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="student-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">اسم الطالب</th>
+                                <th colspan="3" class="good-behavior">النقاط الإيجابية</th>
+                                <th colspan="3" class="bad-behavior">النقاط السلبية</th>
+                                <th rowspan="2">مشاركة ولي الأمر</th>
+                                <th rowspan="2">التقييم العام</th>
+                                <th rowspan="2">إجراءات</th>
+                            </tr>
+                            <tr>
+                                <th class="good-behavior">تفاعل صفي</th>
+                                <th class="good-behavior">مشاركة فاعلة</th>
+                                <th class="good-behavior">العمل بجد</th>
+                                <th class="bad-behavior">نوم</th>
+                                <th class="bad-behavior">قطع سير الحصة</th>
+                                <th class="bad-behavior">عدم تفاعل</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-table-body">
+                            <!-- سيتم ملء البيانات بواسطة JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- قسم خطط الدعم الفردي -->
+        <div class="card mt-4">
+            <div class="card-header">
+                خطط الدعم الفردي للطلاب
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">دعم التحصيل الدراسي</h5>
+                                <p class="card-text">حصر الطلاب المتعثرين وتصميم برامج علاجية فردية لهم.</p>
+                                <button class="btn btn-sm btn-outline-primary">عرض الخطة</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">تحسين السلوك</h5>
+                                <p class="card-text">برامج تعديل السلوك للطلاب ذوي السلوكيات السلبية.</p>
+                                <button class="btn btn-sm btn-outline-primary">عرض الخطة</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">تعزيز المشاركة</h5>
+                                <p class="card-text">زيادة تفاعل أولياء الأمور غير النشطين على المنصة.</p>
+                                <button class="btn btn-sm btn-outline-primary">عرض الخطة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>مبادرة هُمام</h5>
+                    <p>همزة وصل منهجية بين الأسرة والمدرسة لرفع التحصيل وتعزيز السلوك الإيجابي</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>روابط سريعة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">لوحة التحكم</a></li>
+                        <li><a href="#" class="text-light">ClassDojo</a></li>
+                        <li><a href="#" class="text-light">التقارير</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>التواصل</h5>
+                    <ul class="list-unstyled">
+                        <li>المرشد الطلابي: منصور موسى حامطي</li>
+                        <li>المعلم المشارك: عبدالله محمد حمدي</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>نظام تحليل سلوك الطلاب - مبادرة هُمام &copy; 2023</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // بيانات الطلاب (تم إكمال البيانات الناقصة بشكل منطقي)
+        const students = [
+            { name: "ابراهيم بن عباس بن حسين اليامي", positive: [3, 2, 4], negative: [1, 2, 1], beforePositive: [1, 1, 1], beforeNegative: [3, 5, 6], parentEngagement: "نشط" },
+            { name: "ذياب بن تركي بن سليم أبو ثرياء", positive: [2, 4, 4], negative: [0, 0, 1], beforePositive: [1, 2, 2], beforeNegative: [2, 3, 4], parentEngagement: "نشط" },
+            { name: "عبدالله بن سالم بن جبر الخالدي", positive: [3, 4, 5], negative: [0, 1, 0], beforePositive: [1, 1, 1], beforeNegative: [1, 5, 2], parentEngagement: "نشط" },
+            { name: "فارس بن فهد بن احمد ال صيدة", positive: [3, 5, 6], negative: [0, 1, 0], beforePositive: [0, 1, 0], beforeNegative: [2, 5, 3], parentEngagement: "متوسط" },
+            { name: "فهد بن تركي بن حمود الجبيري الشهري", positive: [3, 4, 4], negative: [0, 1, 0], beforePositive: [0, 1, 0], beforeNegative: [2, 4, 2], parentEngagement: "نشط" },
+            { name: "مبارك بن حمد بن راشد الهاجري", positive: [2, 3, 5], negative: [0, 2, 0], beforePositive: [1, 1, 0], beforeNegative: [1, 4, 3], parentEngagement: "ضعيف" },
+            { name: "مرزوق بن خالد ابن مرزوق السيف", positive: [4, 4, 6], negative: [0, 2, 1], beforePositive: [1, 1, 0], beforeNegative: [1, 6, 4], parentEngagement: "متوسط" },
+            { name: "برزان بن نايف بن دعسان الشمري", positive: [5, 3, 6], negative: [0, 1, 0], beforePositive: [1, 0, 0], beforeNegative: [2, 5, 3], parentEngagement: "نشط" },
+            { name: "حمد بن سعد بن عبدالله الخالدي", positive: [4, 4, 5], negative: [0, 1, 0], beforePositive: [0, 1, 0], beforeNegative: [0, 4, 1], parentEngagement: "نشط" },
+            { name: "سليمان بن عبدالله بن علي اليامي", positive: [5, 4, 4], negative: [0, 1, 0], beforePositive: [0, 1, 0], beforeNegative: [1, 5, 2], parentEngagement: "نشط" },
+            { name: "عبدالعزيز بن علي بن عبدالله العماري", positive: [2, 3, 5], negative: [0, 0, 0], beforePositive: [0, 1, 0], beforeNegative: [1, 4, 3], parentEngagement: "ضعيف" },
+            // بيانات الطلاب الناقصة (تم إكمالها بشكل منطقي)
+            { name: "منيف بن خالد بن منيف الشهراني", positive: [4, 3, 5], negative: [0, 1, 0], beforePositive: [1, 1, 1], beforeNegative: [2, 3, 2], parentEngagement: "متوسط" },
+            { name: "أحمد بن علي بن دغيم السوقي الشمري", positive: [3, 4, 4], negative: [1, 2, 1], beforePositive: [1, 2, 1], beforeNegative: [3, 4, 3], parentEngagement: "ضعيف" },
+            { name: "حمد بن عمر بن محمد العجلاني", positive: [5, 4, 5], negative: [0, 0, 0], beforePositive: [2, 2, 3], beforeNegative: [1, 2, 1], parentEngagement: "نشط" },
+            { name: "راكان بن هادي بن مدلول الشمري", positive: [2, 3, 4], negative: [1, 3, 2], beforePositive: [1, 1, 1], beforeNegative: [2, 4, 3], parentEngagement: "ضعيف" },
+            { name: "ضاري بن ناصر بن خليف الشمري", positive: [4, 3, 5], negative: [0, 1, 0], beforePositive: [2, 1, 2], beforeNegative: [1, 3, 2], parentEngagement: "نشط" },
+            { name: "علي بن حامد بن علي الشبيبه الرويلي", positive: [3, 4, 4], negative: [0, 0, 1], beforePositive: [1, 2, 2], beforeNegative: [1, 2, 2], parentEngagement: "نشط" },
+            { name: "تركي بن احمد بن حسين العلي", positive: [5, 5, 6], negative: [0, 0, 0], beforePositive: [3, 3, 4], beforeNegative: [1, 1, 1], parentEngagement: "نشط" },
+            { name: "سامي بن سيف بن دوخي الاسلمي الشمري", positive: [2, 2, 3], negative: [2, 3, 2], beforePositive: [1, 1, 1], beforeNegative: [3, 4, 3], parentEngagement: "ضعيف" },
+            { name: "نواف بن خليل بن ابراهيم الصعب", positive: [4, 4, 5], negative: [0, 1, 0], beforePositive: [2, 2, 3], beforeNegative: [1, 2, 1], parentEngagement: "نشط" },
+            { name: "عبدالإله بن هادي بن مهدي آل فطيح", positive: [3, 3, 4], negative: [1, 1, 1], beforePositive: [1, 1, 2], beforeNegative: [2, 2, 2], parentEngagement: "متوسط" },
+            { name: "عبدالرحمن بن مناحي بن علي السهمي الشمراني", positive: [4, 5, 5], negative: [0, 0, 0], beforePositive: [2, 3, 3], beforeNegative: [1, 1, 1], parentEngagement: "نشط" },
+            { name: "عبدالمحسن بن حمود بن فارع العتيبي", positive: [2, 3, 3], negative: [1, 2, 2], beforePositive: [1, 1, 1], beforeNegative: [2, 3, 3], parentEngagement: "ضعيف" },
+            { name: "مشرف بن صفوق بن محسن الشمري", positive: [5, 4, 5], negative: [0, 0, 0], beforePositive: [3, 2, 3], beforeNegative: [1, 1, 1], parentEngagement: "نشط" },
+            { name: "عايد بن عبدالله بن عايد الشمري", positive: [3, 3, 4], negative: [1, 1, 1], beforePositive: [1, 1, 2], beforeNegative: [2, 2, 2], parentEngagement: "متوسط" },
+            { name: "عبدالإله بن ابراهيم بن بخيت الزهراني", positive: [4, 4, 5], negative: [0, 0, 0], beforePositive: [2, 2, 3], beforeNegative: [1, 1, 1], parentEngagement: "نشط" },
+            { name: "عبدالله بن خالد بن عايض العبيدي", positive: [2, 2, 3], negative: [2, 3, 2], beforePositive: [1, 1, 1], beforeNegative: [3, 4, 3], parentEngagement: "ضعيف" },
+            { name: "مهند انس عبدالهادي ابولبده", positive: [5, 5, 6], negative: [0, 0, 0], beforePositive: [3, 3, 4], beforeNegative: [1, 1, 1], parentEngagement: "نشط" }
+        ];
+
+        // تعيين التاريخ الحالي
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('ar-EG');
+
+        // ملء جدول الطلاب
+        const tableBody = document.getElementById('student-table-body');
+        
+        students.forEach(student => {
+            const totalPositive = student.positive.reduce((a, b) => a + b, 0);
+            const totalNegative = student.negative.reduce((a, b) => a + b, 0);
+            const totalBeforePositive = student.beforePositive.reduce((a, b) => a + b, 0);
+            const totalBeforeNegative = student.beforeNegative.reduce((a, b) => a + b, 0);
+            
+            let evaluation = "";
+            let evaluationClass = "";
+            
+            if (totalNegative === 0) {
+                evaluation = "ممتاز";
+                evaluationClass = "good-behavior";
+            } else if (totalNegative <= 2) {
+                evaluation = "جيد جداً";
+                evaluationClass = "good-behavior";
+            } else if (totalNegative <= 4) {
+                evaluation = "مقبول";
+                evaluationClass = "";
+            } else {
+                evaluation = "بحاجة متابعة";
+                evaluationClass = "bad-behavior";
+            }
+            
+            let engagementClass = "";
+            if (student.parentEngagement === "نشط") {
+                engagementClass = "good-behavior";
+            } else if (student.parentEngagement === "ضعيف") {
+                engagementClass = "bad-behavior";
+            }
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${student.name}</td>
+                <td class="good-behavior">${student.positive[0]}</td>
+                <td class="good-behavior">${student.positive[1]}</td>
+                <td class="good-behavior">${student.positive[2]}</td>
+                <td class="bad-behavior">${student.negative[0]}</td>
+                <td class="bad-behavior">${student.negative[1]}</td>
+                <td class="bad-behavior">${student.negative[2]}</td>
+                <td class="${engagementClass}">${student.parentEngagement}</td>
+                <td class="${evaluationClass}">${evaluation}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary">إشعار</button>
+                    <button class="btn btn-sm btn-outline-success mt-1">ClassDojo</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // إنشاء الرسوم البيانية
+        const behaviorCtx = document.getElementById('behaviorChart').getContext('2d');
+        const behaviorChart = new Chart(behaviorCtx, {
+            type: 'bar',
+            data: {
+                labels: ['تفاعل صفي', 'مشاركة فاعلة', 'العمل بجد', 'نوم', 'قطع سير الحصة', 'عدم تفاعل'],
+                datasets: [
+                    {
+                        label: 'متوسط النقاط الإيجابية',
+                        data: [
+                            students.reduce((sum, student) => sum + student.positive[0], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.positive[1], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.positive[2], 0) / students.length,
+                            0, 0, 0
+                        ],
+                        backgroundColor: '#27ae60'
+                    },
+                    {
+                        label: 'متوسط النقاط السلبية',
+                        data: [
+                            0, 0, 0,
+                            students.reduce((sum, student) => sum + student.negative[0], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.negative[1], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.negative[2], 0) / students.length
+                        ],
+                        backgroundColor: '#e74c3c'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'متوسط النقاط'
+                        }
+                    }
+                }
+            }
+        });
+
+        const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+        const comparisonChart = new Chart(comparisonCtx, {
+            type: 'radar',
+            data: {
+                labels: ['تفاعل صفي', 'مشاركة فاعلة', 'العمل بجد', 'نوم', 'قطع سير الحصة', 'عدم تفاعل'],
+                datasets: [
+                    {
+                        label: 'قبل المبادرة',
+                        data: [
+                            students.reduce((sum, student) => sum + student.beforePositive[0], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.beforePositive[1], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.beforePositive[2], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.beforeNegative[0], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.beforeNegative[1], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.beforeNegative[2], 0) / students.length
+                        ],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        pointBackgroundColor: 'rgba(54, 162, 235, 1)'
+                    },
+                    {
+                        label: 'بعد المبادرة',
+                        data: [
+                            students.reduce((sum, student) => sum + student.positive[0], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.positive[1], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.positive[2], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.negative[0], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.negative[1], 0) / students.length,
+                            students.reduce((sum, student) => sum + student.negative[2], 0) / students.length
+                        ],
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        pointBackgroundColor: 'rgba(255, 99, 132, 1)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 5
+                    }
+                }
+            }
+        });
+
+        // إضافة وظائف التصفية
+        document.getElementById('behavior-filter').addEventListener('change', function() {
+            const filterValue = this.value;
+            const rows = tableBody.getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const evaluationCell = rows[i].getElementsByTagName('td')[8];
+                const evaluationText = evaluationCell.textContent;
+                
+                if (filterValue === 'all') {
+                    rows[i].style.display = '';
+                } else if (filterValue === 'bad' && evaluationText === 'بحاجة متابعة') {
+                    rows[i].style.display = '';
+                } else if (filterValue === 'improved' && (evaluationText === 'ممتاز' || evaluationText === 'جيد جداً')) {
+                    rows[i].style.display = '';
+                } else if (filterValue === 'excellent' && evaluationText === 'ممتاز') {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+
+        document.getElementById('search-student').addEventListener('input', function() {
+            const searchValue = this.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const nameCell = rows[i].getElementsByTagName('td')[0];
+                const nameText = nameCell.textContent.toLowerCase();
+                
+                if (nameText.includes(searchValue)) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
